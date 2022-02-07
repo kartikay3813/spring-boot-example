@@ -1,54 +1,35 @@
-pipeline { 
-    agent any  
-    
+pipeline{
+    agent any
     tools { 
-        maven 'Maven'  
+        maven 'maven3'
     }
-    stages {
-        stage('Build') {
-            steps {
-                sh 'mvn -B -DskipTests clean package'
-            }
-        }
-        stage('Test') {
-            steps {
-                sh 'mvn test'
-            }
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml'
+    stages
+       {
+            stage("clean")
+            {
+                steps{
+                    sh "mvn clean"
                 }
-                failure
-                {
-                    mail( body: 'Deliver Stage FAILED', subject: 'Build Report Test stage', to: 'kartikay.bhardwaj@knoldus.com' )
-                }
-                success
-                {
-                    mail( body: 'Deliver Stage succeeded', subject: 'Build Report Test stage', to: 'kartikay.bhardwaj@knoldus.com' )
+            }
+            stage("Build")
+            {
+                steps{
+                    sh "mvn compile"
                 }
                 
             }
-        }
-        stage('Deliver') {
-            when {
-                expression {
-                    BRANCH_NAME == 'Production'
+            stage("TEST")
+            {
+                steps{
+                    sh "mvn test"
                 }
             }
-            steps {
-                sh 'chmod +x ./jenkins/scripts/deliver.sh'
-                sh './jenkins/scripts/deliver.sh'
-            }
-            post {
-                failure
-                {
-                    mail( body: 'Deliver Stage FAILED', subject: 'Build Report Deliver stage', to: 'kartikay.bhardwaj@knoldus.com' )
-                }
-                 success
-                {
-                    mail( body: 'Deliver Stage succeeded', subject: 'Build Report Deliver stage', to: 'kartikay.bhardwaj@knoldus.com' )
+            stage("package")
+            {
+                steps{
+                    sh "mvn package"
                 }
             }
-        }
+        
     }
 }
