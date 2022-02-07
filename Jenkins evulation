@@ -1,29 +1,35 @@
-pipeline {
-    agent any 
-        tools {
-            maven 'Maven 3.6.3'
-            //jdk 'jdk 11'
-        }
-    stages {
-                stage("building"){
-            steps{
-                sh "mvn compile"
-		 
-            }
+pipeline{
+    agent any
+    tools { 
+        maven 'maven3'
+    }
+    stages
+       {
+            stage("clean")
+            {
+                steps{
+                    sh "mvn clean"
                 }
-
-        stage('Testing') {
-            steps {
-                echo 'Testing the application...'
-                sh "mvn clean test"
             }
-        }
+            stage("Build")
+            {
+                steps{
+                    sh "mvn compile"
+                }
+                
+            }
+            stage("TEST")
+            {
+                steps{
+                    sh "mvn test"
+                }
+            }
+            stage("package")
+            {
+                steps{
+                    sh "mvn package"
+                }
+            }
+        
     }
-    post {
-        success{
-        echo "Testing stage successful"
-        }
-        failure{
-        echo "Testing stage failed"
-        }
-    }
+}
