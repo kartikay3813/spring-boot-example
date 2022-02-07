@@ -32,7 +32,7 @@ pipeline {
         stage('Deliver') {
             when {
                 expression {
-                    BRANCH_NAME == 'Development'
+                    BRANCH_NAME == 'Production'
                 }
             }
             steps {
