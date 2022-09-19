@@ -30,6 +30,7 @@ pipeline{
                     sh "mvn package"
                 }
             }
-        
+    
     }
+   
 }
